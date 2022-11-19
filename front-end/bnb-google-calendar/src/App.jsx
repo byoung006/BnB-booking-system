@@ -1,5 +1,6 @@
-import { useState } from "react";
+import {useState} from "react";
 import "./App.css";
+
 const EventInput = ({
   placeholder,
   label,
@@ -54,16 +55,46 @@ const EventInput = ({
   );
 };
 function App() {
-  const [events, setEvents] = useState([{}]);
+  const [events, setEvents] = useState({});
   const [eventDataErrors, setEventDataErrors] = useState({});
-
-  console.log(events, "events");
-
   const handleInputChange = (e) => {
-    e.preventDefault();
     const { value } = e.target;
     setEvents({ ...events, [e.target.name]: value });
   };
+
+  const handleAddEvent = (e) => {
+      e.preventDefault();
+      const newFormData = new FormData();
+
+
+      for (let key in events) {
+          newFormData.append(key, events[key]);
+      }
+      function getBackendApi() {
+          let host = window.location.host;
+          if(host === "localhost:5173") {
+              return "http://localhost:3000";
+
+          }
+      }
+      console.log(JSON.stringify(newFormData), "newFormData");
+      let formDataUrl = `${getBackendApi()}/createEvent`;
+
+           fetch(formDataUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newFormData),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+  }
   return (
     <div className="App">
       <EventInput
@@ -109,6 +140,7 @@ function App() {
         phrase={"attendees"}
         label={"Number of Guests"}
       />
+        <button onClick={handleAddEvent}>Add Event</button>
       <br />
     </div>
   );

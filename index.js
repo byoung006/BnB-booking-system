@@ -30,10 +30,6 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-const Today = new Date();
-let tomorrow = new Date();
-tomorrow.setDate(Today.getDate() + 1);
-
 const calendar = google.calendar({
   version: "v3",
   project: GOOGLE_PROJECT_NUMBER,
@@ -63,17 +59,18 @@ app.get("/", (req, res) => {
   );
 });
 app.post("/createEvent", cors(), (req, res) => {
+  console.log(req.body, 'req.body');
   res.setHeader("Content-Type", "application/json");
   let newEvent = {
     summary: req.body.summary,
     location: "Pigeon Lake, AB, Canada",
     description: "New Booking",
     start: {
-      dateTime: req.body.startDate,
+      date: req.body.startDate,
       timeZone: "Mountain Standard Time",
     },
     end: {
-      dateTime: req.body.endDate,
+      date: req.body.endDate,
       timeZone: "Mountain Standard Time",
     },
     attendees: req.body.attendees,
@@ -85,8 +82,7 @@ app.post("/createEvent", cors(), (req, res) => {
       ],
     },
   };
-  console.log(res.headersSent);
-
+console.log(newEvent, 'newEvent');
   const auth = new google.auth.GoogleAuth({
     keyFile: "./bnb-calendar-access-a2a8476289eb.json",
     scopes: "https://www.googleapis.com/auth/calendar",
@@ -102,7 +98,7 @@ app.post("/createEvent", cors(), (req, res) => {
         if (err) {
           console.log(
             "There was an error contacting the Calendar service: " +
-              err.errors[0].message
+              err.errors
           );
           console.log(err.errors);
           return;
