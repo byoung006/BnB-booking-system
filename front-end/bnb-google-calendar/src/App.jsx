@@ -1,6 +1,7 @@
-import {useState} from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
-
+import axios from "axios";
+import { Grid } from "@mui/material";
 const EventInput = ({
   placeholder,
   label,
@@ -54,49 +55,74 @@ const EventInput = ({
     </>
   );
 };
+
+const BookedDates = ({ bookedDates }) => {
+  console.log(bookedDates, "bookedDates");
+  return (
+    <Grid container spacing={3}>
+      {bookedDates.map((bookedDate) => {
+        return (
+          <Grid item xs={6}>
+            <p>{bookedDate.description}</p>
+            <p>{bookedDate.summary}</p>
+            <p>{bookedDate.start.date}</p>
+            <p>{bookedDate.end.date}</p>
+            <p>{bookedDate.attendees}</p>
+          </Grid>
+        );
+      })}
+    </Grid>
+  );
+};
 function App() {
   const [events, setEvents] = useState({});
+  const [savedEvents, setSavedEvents] = useState([]);
+  console.log(savedEvents, "saved events");
   const [eventDataErrors, setEventDataErrors] = useState({});
   const handleInputChange = (e) => {
-    const { value } = e.target;
-    setEvents({ ...events, [e.target.name]: value });
+    setEvents({ ...events, [e.target.name]: e.target.value });
   };
+  function getBackendApi() {
+    let host = window.location.host;
+    if (host === "localhost:5173") {
+      return "http://localhost:3000";
+    }
+  }
+  useEffect(() => {
+    const init = async () => {
+      const { data } = await axios.get(`${getBackendApi()}/`);
+      console.log(data, "data");
+      setSavedEvents(data.events);
+    };
+    init();
+  }, []);
 
   const handleAddEvent = (e) => {
-      e.preventDefault();
-      const newFormData = new FormData();
+    console.log(e, "e.target.value");
+    e.preventDefault();
+    let headers = { "Content-Type": "application/json" };
 
+    let stringifiedEvents = JSON.stringify(events);
+    console.log(stringifiedEvents, "stringifiedEvents");
+    let formDataUrl = `${getBackendApi()}/createEvent`;
 
-      for (let key in events) {
-          newFormData.append(key, events[key]);
-      }
-      function getBackendApi() {
-          let host = window.location.host;
-          if(host === "localhost:5173") {
-              return "http://localhost:3000";
-
-          }
-      }
-      console.log(JSON.stringify(newFormData), "newFormData");
-      let formDataUrl = `${getBackendApi()}/createEvent`;
-
-           fetch(formDataUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newFormData),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-  }
+    axios
+      .post(formDataUrl, stringifiedEvents, { headers: headers })
+      .then(function (response) {
+        console.log(response, "response");
+        if (response.status === 200) {
+          console.log(response.status, "success");
+        } else {
+          console.log(response, "error?");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
   return (
     <div className="App">
+      <BookedDates bookedDates={savedEvents} />
       <EventInput
         events={events}
         eventDataErrors={eventDataErrors}
@@ -140,7 +166,7 @@ function App() {
         phrase={"attendees"}
         label={"Number of Guests"}
       />
-        <button onClick={handleAddEvent}>Add Event</button>
+      <button onClick={handleAddEvent}>Add Event</button>
       <br />
     </div>
   );
