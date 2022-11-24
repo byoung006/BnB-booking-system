@@ -55,7 +55,7 @@ const EventInput = ({
             background: "#fff",
             color: "black",
           }}
-          key={phrase.id}
+          key={events.id}
           {...{ value: events[name] }}
           name={name}
         />
@@ -86,13 +86,18 @@ const EventInput = ({
 
 const BookedDates = ({ bookedDates }) => {
   return (
-    <Grid container spacing={3}>
+    <Grid container justifyContent={"center"}>
       <Grid item xs={6}>
         <p>{bookedDates.description}</p>
         <p>{bookedDates.summary}</p>
         <p>{bookedDates.start.date}</p>
         <p>{bookedDates.end.date}</p>
         <p>{bookedDates.attendees}</p>
+        <div style={{ textAlign: "center" }}>
+          <a target={"_blank"} href={bookedDates.htmlLink}>
+            {"Calendar Booking Details"}
+          </a>
+        </div>
       </Grid>
     </Grid>
   );
@@ -101,7 +106,6 @@ const BookedDates = ({ bookedDates }) => {
 function App() {
   const [events, setEvents] = useState({});
   const [savedEvents, setSavedEvents] = useState([]);
-  console.log(savedEvents, "savedEvents");
   const [eventDataErrors, setEventDataErrors] = useState({});
   const [isBooked, setIsBooked] = useState(false);
   const [bookedDates, setBookedDates] = useState({});
@@ -141,12 +145,10 @@ function App() {
   }, [isBooked]);
 
   const handleAddEvent = (e) => {
-    console.log(e, "e.target.value");
     e.preventDefault();
     let headers = { "Content-Type": "application/json" };
 
     let stringifiedEvents = JSON.stringify(events);
-    console.log(stringifiedEvents, "stringifiedEvents");
     let formDataUrl = `${getBackendApi()}/createEvent`;
 
     axios
@@ -169,14 +171,14 @@ function App() {
       {savedEvents &&
         savedEvents.map((event, idx) => {
           return (
-            <Accordion placeholder={"stuff"}>
+            <Accordion>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
                 id="panel1a-header"
                 placeholder={"Booked dates"}
               >
-                <h6>{`Booked Dates: ${bookedDates.start} - ${bookedDates.end} `}</h6>
+                <h6>{`Booking # ${event.id}: on ${event.start.date} - ${event.end.date} `}</h6>
               </AccordionSummary>
               <AccordionDetails
                 children={<BookedDates bookedDates={event} />}
@@ -241,9 +243,6 @@ function App() {
         />
       </Grid>
       <br />
-      {/*<Button className={"button"} onClick={handleAddEvent}>*/}
-      {/*  Add Event*/}
-      {/*</Button>*/}
       <StyledButton onClick={handleAddEvent}>Add Event</StyledButton>
       <br />
     </div>
