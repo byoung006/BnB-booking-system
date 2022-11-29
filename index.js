@@ -63,7 +63,7 @@ app.post("/createEvent", cors(), (req, res) => {
   let newEvent = {
     summary: req.body.summary,
     location: "Pigeon Lake, AB, Canada",
-    description: "New Booking",
+    description: req.body.description,
     start: {
       date: req.body.startDate,
       timeZone: "UTC-7",

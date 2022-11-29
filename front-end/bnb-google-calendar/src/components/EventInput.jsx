@@ -45,13 +45,14 @@ const EventInput = ({
           </span>
         ))}
         <br />
-        <textarea
+        <TextField
           form={events}
           {...{ value: events[name] }}
           onChange={onChange}
-          style={{ color: "red" }}
           key={phrase.id}
           name={name}
+          multiline
+          minRows={5}
         />
       </label>
     </>

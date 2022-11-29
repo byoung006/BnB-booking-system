@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Grid,
-} from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore.js";
-import BookedDates from "../components/BookedDates.jsx";
+import { useNavigate } from "react-router-dom";
+import { Button, Grid } from "@mui/material";
 import EventInput from "../components/EventInput.jsx";
 import getBackendApi from "../helper-functions/getBackendApi.jsx";
 import axios from "axios";
@@ -27,9 +21,13 @@ const StyledButton = styled("button")({
 const CreateBooking = () => {
   const [events, setEvents] = useState({});
   const [eventDataErrors, setEventDataErrors] = useState({});
-
+  const navigateTo = useNavigate();
   const handleInputChange = (e) => {
     setEvents({ ...events, [e.target.name]: e.target.value });
+  };
+
+  const onGoToBookings = () => {
+    return navigateTo("/listBookings");
   };
 
   const handleAddEvent = (e) => {
@@ -55,13 +53,16 @@ const CreateBooking = () => {
   };
 
   return (
-    <div className="App">
+    <>
       <Grid
         container
         style={{ paddingTop: "10%" }}
         direction="column"
         spacing={3}
       >
+        <Grid item xs={12} style={{ paddingBottom: "5%" }}>
+          <Button onClick={onGoToBookings}> Upcoming Bookings </Button>
+        </Grid>
         <EventInput
           events={events}
           eventDataErrors={eventDataErrors}
@@ -69,9 +70,7 @@ const CreateBooking = () => {
           placeholder={"Summary"}
           name={"summary"}
           phrase={"summary"}
-          label={
-            "Which type of Booking is this? (e.g. 'Multi-night stay', 'Single-night stay')"
-          }
+          label={"Title of Booking (First and Last names)"}
         />
         <br />
         <Grid item container direction="row">
@@ -106,16 +105,26 @@ const CreateBooking = () => {
           events={events}
           eventDataErrors={eventDataErrors}
           onChange={handleInputChange}
-          placeholder={"Number of Guests"}
+          placeholder={"Email Contact"}
           name={"attendees"}
           phrase={"attendees"}
-          label={"Number of Guests"}
+          label={"Email Contact"}
+        />
+        <EventInput
+          events={events}
+          eventDataErrors={eventDataErrors}
+          onChange={handleInputChange}
+          placeholder={"Email Contact"}
+          name={"description"}
+          phrase={"description"}
+          label={"Brief Description"}
+          textArea={true}
         />
       </Grid>
       <br />
       <StyledButton onClick={handleAddEvent}>Add Event</StyledButton>
       <br />
-    </div>
+    </>
   );
 };
 export default CreateBooking;
