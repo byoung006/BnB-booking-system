@@ -13,7 +13,6 @@ const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY;
 const GOOGLE_CLIENT_EMAIL = process.env.GOOGLE_CLIENT_EMAIL;
 const GOOGLE_PROJECT_NUMBER = process.env.GOOGLE_PROJECT_NUMBER;
 const GOOGLE_CALENDAR_ID = process.env.GOOGLE_CALENDAR_ID;
-
 const jwtClient = new google.auth.JWT(
   GOOGLE_CLIENT_EMAIL,
   null,
@@ -35,7 +34,37 @@ const calendar = google.calendar({
   project: GOOGLE_PROJECT_NUMBER,
   auth: jwtClient,
 });
+app.get("/event", (req, res) => {
+  console.log(res, "res");
+  const EVENT_ID = req.query.eventId;
+  console.log(EVENT_ID, "EVENT_ID");
 
+  calendar.events.get(
+    {
+      calendarId: GOOGLE_CALENDAR_ID,
+      maxResults: 1,
+      singleEvents: true,
+      eventId: EVENT_ID,
+    },
+    (error, result) => {
+      console.log(result, "result from google");
+      if (error) {
+        res.send(JSON.stringify({ error: error }));
+      } else {
+        if (result.data) {
+          res.send(JSON.stringify({ event: result.data }));
+        } else {
+          res.send(
+            JSON.stringify({
+              message:
+                "No event with that ID found - maybe this event has already happened?",
+            })
+          );
+        }
+      }
+    }
+  );
+});
 app.get("/", (req, res) => {
   calendar.events.list(
     {

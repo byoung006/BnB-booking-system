@@ -1,7 +1,17 @@
-import { Grid, TextField } from "@mui/material";
+import {
+  FormControlLabel,
+  FormGroup,
+  Grid,
+  Switch,
+  TextField,
+} from "@mui/material";
 import { handleDateFormat } from "../helper-functions/handleDateFormat.jsx";
 import Divider from "@mui/material/Divider";
+import { Link, Route, Router } from "react-router-dom";
+import Event from "./Event.jsx";
+import { useState } from "react";
 const BookedDates = ({ bookedDates }) => {
+  const [checked, setChecked] = useState(false);
   console.log("bookedDates", bookedDates);
   return bookedDates.map((date) => {
     console.log(date, "date");
@@ -45,7 +55,20 @@ const BookedDates = ({ bookedDates }) => {
               {"Calendar Booking Details"}
             </a>
           </div>
-          <Divider style={{ paddingBottom: "5%" }} />
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={checked}
+                  onChange={() => setChecked(!checked)}
+                  defaultChecked={false}
+                />
+              }
+              label="Review Booking"
+            />{" "}
+            {checked ? <Event eventId={date.id} /> : null}
+          </FormGroup>
+          <Divider style={{ paddingbottom: "5%" }} />
         </Grid>
       </>
     );
