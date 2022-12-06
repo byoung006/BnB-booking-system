@@ -8,7 +8,7 @@ import {
 import { handleDateFormat } from "../helper-functions/handleDateFormat.jsx";
 import Divider from "@mui/material/Divider";
 import { Link, Route, Router } from "react-router-dom";
-import Event from "./Event.jsx";
+import Event from "./Event.tsx";
 import { useState } from "react";
 const BookedDates = ({ bookedDates }) => {
   const [checked, setChecked] = useState(false);

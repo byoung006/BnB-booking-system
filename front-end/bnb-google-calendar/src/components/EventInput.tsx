@@ -1,6 +1,6 @@
 import { TextField } from "@mui/material";
-
-const EventInput = ({
+import { Input } from "../interfaces/InputInterfaces";
+const EventInput: React.FC<Input> = ({
   placeholder,
   label,
   name,
@@ -10,7 +10,7 @@ const EventInput = ({
   eventDataErrors,
   phrase,
   textArea = false,
-}) => {
+}: Input) => {
   return !textArea ? (
     <>
       <label>
@@ -46,7 +46,7 @@ const EventInput = ({
         ))}
         <br />
         <TextField
-          form={events}
+          // form={events}
           {...{ value: events[name] }}
           onChange={onChange}
           key={phrase.id}

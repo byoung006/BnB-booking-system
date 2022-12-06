@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Grid } from "@mui/material";
-import EventInput from "../components/EventInput.jsx";
+import EventInput from "../components/EventInput.tsx";
 import getBackendApi from "../helper-functions/getBackendApi.jsx";
 import axios from "axios";
 import { styled } from "@mui/system";
