@@ -5,7 +5,7 @@ const cors = require("cors");
 const logger = require("morgan");
 
 require("dotenv").config({ path: "./.env" });
-//hello there this is a test and I think it works now? 
+//hello there this is a test to open nvim for writting commits 
 const app = express();
 const SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
 const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY;
