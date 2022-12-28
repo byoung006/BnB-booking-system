@@ -5,6 +5,7 @@ import EventInput from "../components/EventInput.tsx";
 import getBackendApi from "../helper-functions/getBackendApi.jsx";
 import axios from "axios";
 import { styled } from "@mui/system";
+import {Cats} from "../interfaces/InputInterfaces.js";
 const StyledButton = styled("button")({
   background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
   border: "1px solid #FF8E53",
@@ -26,7 +27,7 @@ const CreateBooking = () => {
     setEvents({ ...events, [e.target.name]: e.target.value });
   };
 
-  const onGoToBookings = () => {
+  const goToBookings = () => {
     return navigateTo("/listBookings");
   };
 
@@ -61,7 +62,7 @@ const CreateBooking = () => {
         spacing={3}
       >
         <Grid item xs={12} style={{ paddingBottom: "5%" }}>
-          <Button onClick={onGoToBookings}> Upcoming Bookings </Button>
+          <Button onClick={goToBookings}> Upcoming Bookings </Button>
         </Grid>
         <EventInput
           events={events}
@@ -69,7 +70,8 @@ const CreateBooking = () => {
           onChange={handleInputChange}
           placeholder={"Summary"}
           name={"summary"}
-          phrase={"summary"}
+          phrase={{id:'summary'}}
+          textFieldProps={{placeholder:'summary', maxRows:5}}
           label={"Title of Booking (First and Last names)"}
         />
         <br />
@@ -119,6 +121,7 @@ const CreateBooking = () => {
           phrase={"description"}
           label={"Brief Description"}
           textArea={true}
+
         />
       </Grid>
       <br />

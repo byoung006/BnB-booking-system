@@ -74,19 +74,24 @@ app.get("/", (req, res) => {
       orderBy: "startTime",
     },
     (error, result) => {
-      if (error) {
-        res.send(JSON.stringify({ error: error }));
-      } else {
-        if (result.data.items.length) {
-          res.send(JSON.stringify({ events: result.data.items }));
-        } else {
-          res.send(JSON.stringify({ message: "No upcoming events found." }));
-        }
+      if (error)
+        return res.send(JSON.stringify({error: error}));
+
+      let message = '';
+      if (result.data.items.length) {
+        message = 'No upcoming events found.';
       }
+      return res.send(JSON.stringify({events: result.data.items, message}));
     }
   );
 });
 app.post("/createEvent", cors(), (req, res) => {
+
+  const {startDate, endDate, description, summary, attendees} = req.body;
+
+  // if (!any of that shit)
+    // give me that shit
+
   res.setHeader("Content-Type", "application/json");
   let newEvent = {
     summary: req.body.summary,
@@ -109,11 +114,11 @@ app.post("/createEvent", cors(), (req, res) => {
       ],
     },
   };
-  console.log(newEvent, "newEvent");
   const auth = new google.auth.GoogleAuth({
     keyFile: "./bnb-calendar-access-a2a8476289eb.json",
     scopes: "https://www.googleapis.com/auth/calendar",
   });
+
   auth.getClient().then((a) => {
     calendar.events.insert(
       {
