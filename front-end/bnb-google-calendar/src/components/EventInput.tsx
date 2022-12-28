@@ -1,44 +1,21 @@
-import { TextField } from "@mui/material";
-import { Input } from "../interfaces/InputInterfaces";
-const EventInput: React.FC<Input> = ({
-  placeholder,
+import { InputProps, TextField } from "@mui/material";
+import { ReactNode } from "react";
+import { TextFieldProps } from "@mui/material/TextField/TextField";
+import { EventInputProps } from "../interfaces/InputInterfaces";
+
+const EventInput = ({
   label,
   name,
-  type = "text",
-  onChange,
+  type,
+  textFieldProps,
   events,
   eventDataErrors,
-  phrase,
-  textArea = false,
-}: Input) => {
-  return !textArea ? (
+}: EventInputProps): ReactNode => {
+  const multiRow = type !== "date";
+  return (
     <>
       <label>
-        <span key={phrase.id}>{label}</span>
-        {eventDataErrors?.[name]?.map((error) => (
-          <span key={error.id} style={{ color: "red", fontWeight: "bold" }}>
-            {error}
-          </span>
-        ))}
-        <br />
-        <TextField
-          type={type}
-          onChange={onChange}
-          placeholder={placeholder}
-          style={{
-            background: "#fff",
-            color: "black",
-          }}
-          key={events.id}
-          {...{ value: events[name] }}
-          name={name}
-        />
-      </label>
-    </>
-  ) : (
-    <>
-      <label>
-        <span key={phrase.id}>{label}</span>{" "}
+        <span>{label}</span>{" "}
         {eventDataErrors?.[name]?.map((error) => (
           <span key={error.id} style={{ color: "red", fontWeight: "bold" }}>
             {error}
@@ -47,12 +24,14 @@ const EventInput: React.FC<Input> = ({
         <br />
         <TextField
           // form={events}
-          {...{ value: events[name] }}
-          onChange={onChange}
-          key={phrase.id}
+          style={{
+            background: "#fff",
+            color: "black",
+          }}
+          value={events[name]}
           name={name}
-          multiline
-          minRows={5}
+          {...(multiRow ? { multiline: true, minRows: 5 } : {})}
+          {...textFieldProps}
         />
       </label>
     </>
